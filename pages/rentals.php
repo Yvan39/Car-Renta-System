@@ -159,8 +159,8 @@ include'../includes/sidebar.php';
                                 echo "<td>{$row['status']}</td>";
                                 echo "<td>
                                     <a href='updateBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-primary'>Update</a>
-                                    <a href='cancelBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-primary'>Cancel</a>
-                                    <a href='editBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-primary'>Edit</a>
+                                    <a href='cancelBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-danger'>Cancel</a>
+                                    <a href='editBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-warning'>Edit</a>
                                 </td>";
                             }
                         } else {
