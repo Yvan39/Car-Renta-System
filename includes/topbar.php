@@ -43,19 +43,25 @@
     function updateTimestamp() {
         // Get the element with the 'timestamp' id
         var timestampDiv = document.getElementById('timestamp');
-        
+
         // Create a new Date object to get the current date and time
         var now = new Date();
-        
+
         // Format the timestamp as a localized string
         var timestamp = now.toLocaleString();
-        
+
         // Set the inner text of the timestampDiv to the formatted timestamp
         timestampDiv.innerText = timestamp;
     }
 
     // Call the updateTimestamp function when the window has finished loading
-    window.onload = updateTimestamp;
+    window.onload = function () {
+        // Call updateTimestamp immediately
+        updateTimestamp();
+
+        // Update the timestamp every second (1000 milliseconds)
+        setInterval(updateTimestamp, 1000);
+    };
 </script>
 
 
