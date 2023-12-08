@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2023 at 05:42 AM
+-- Generation Time: Dec 08, 2023 at 08:27 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -61,7 +61,10 @@ CREATE TABLE `cars` (
 --
 
 INSERT INTO `cars` (`carId`, `carName`, `brand`, `model`, `yearModel`, `color`) VALUES
-(1, 'Car 1', 'Toyota', '1GD-FTV', 2023, 'Gray');
+(1, 'Toyota Hiace 2021', 'Toyota', 'Hiace', 2021, 'Black'),
+(2, 'Toyota Hiace 2019', 'Toyota', 'Hiace', 2019, 'White Pearl'),
+(3, 'Innova', 'Toyota', 'Innova ', 2022, 'Blackish Red Mica'),
+(4, 'Toyota Vios', 'Toyota', 'Vios', 2018, 'Silver Metallic');
 
 -- --------------------------------------------------------
 
@@ -84,7 +87,8 @@ INSERT INTO `customers` (`customerId`, `name`, `number`) VALUES
 (2, 'Don-Don Maranan', '2147483647'),
 (3, 'Miko Salangsang', '2147483647'),
 (4, 'maria clara', '2147483647'),
-(5, 'Pedro', '9214573438');
+(5, 'Pedro', '9214573438'),
+(6, 'Joross', '9953635718');
 
 -- --------------------------------------------------------
 
@@ -113,9 +117,18 @@ CREATE TABLE `rentals` (
 INSERT INTO `rentals` (`rentalId`, `customerId`, `carId`, `borrowDate`, `returnDate`, `price`, `fine_per_day`, `dateReturned`, `penalty`, `grossIncome`, `status`) VALUES
 (1, 1, 1, '2023-12-05', '2023-12-06', '5000.00', '5000.00', '2023-12-06', '0.00', '5000.00', 'completed'),
 (2, 2, 1, '2023-12-05', '2023-12-06', '5000.00', '5000.00', '2023-12-06', '0.00', '5000.00', 'completed'),
-(3, 3, 1, '2023-12-05', '2023-12-06', '7000.00', '7000.00', '2023-12-06', '0.00', NULL, 'completed'),
+(3, 3, 1, '2023-12-05', '2023-12-06', '7000.00', '7000.00', '2023-12-06', '0.00', '7000.00', 'completed'),
 (4, 4, 1, '2023-12-05', '2023-12-07', '6000.00', '6000.00', NULL, NULL, NULL, 'upcoming'),
-(5, 5, 1, '2023-12-05', '2023-12-06', '5000.00', '5000.00', NULL, NULL, NULL, 'ongoing');
+(5, 5, 1, '2023-12-05', '2023-12-06', '5000.00', '5000.00', '2023-12-06', '0.00', '5000.00', 'completed'),
+(6, 6, 4, '2023-12-08', '2023-12-09', '5000.00', '500.00', NULL, NULL, NULL, 'ongoing');
+
+--
+-- Triggers `rentals`
+--
+DELIMITER $$
+CREATE TRIGGER `calculate_gross_income` BEFORE INSERT ON `rentals` FOR EACH ROW SET NEW.grossIncome = NEW.price + NEW.penalty
+$$
+DELIMITER ;
 
 --
 -- Indexes for dumped tables
@@ -162,19 +175,19 @@ ALTER TABLE `admin_accounts`
 -- AUTO_INCREMENT for table `cars`
 --
 ALTER TABLE `cars`
-  MODIFY `carId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `carId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `customerId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `rentals`
 --
 ALTER TABLE `rentals`
-  MODIFY `rentalId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `rentalId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

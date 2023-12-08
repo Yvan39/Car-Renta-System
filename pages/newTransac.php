@@ -61,65 +61,107 @@ include'../includes/sidebar.php';
         }
 
     </style>
+<?php
+include_once('../includes/connection.php');
 
+class CarManager
+{
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
+    // Method to get all car names from the database
+    public function getAllCarNames()
+    {
+        $selectCarNamesQuery = "SELECT carName FROM cars";
+        $result = $this->db->query($selectCarNamesQuery);
+
+        $carNames = array();
+        while ($row = $result->fetch_assoc()) {
+            $carNames[] = $row['carName'];
+        }
+
+        return $carNames;
+    }
+}
+$dbConnection = new DbConnection();
+$db = $dbConnection->getConnection();
+
+$carManager = new CarManager($db);
+
+// Fetch all car names from the database
+$carNames = $carManager->getAllCarNames();
+?>
     <!-- Form to add new transaction or new booking -->
     <!-- Start of newTransaction -->
-    <div class="cardProduct">
-        <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="true" style="color: white; background-color: rgb(25,25,112); font-weight: bold;">ADD BOOKING</a>
-                </li>             
-            </ul>
-        </div>
-    <div class="newTransacForm">
-            <form method="POST">
-
-                <label for="customerName">Customer Name:</label><br>
-                <input type="text" id="customerName" name="customerName" required>
-                <br>
-                
-                <label for="customerNumber">Customer Number:</label><br>
-                <input type="number" id="customerNumber" name="customerNumber" required>
-                <br>  
-
-                <label for="car">Car:</label><br>
-                <select id="car" name="car">
-                    <option value="Car 1">Car 1</option>
-                    <option value="Car 2">Car 2</option>
-                    <option value="Car 3">Car 3</option>
-                    <option value="Car 4">Car 4</option>
-                </select>
-                <br>   
-
-                <label for="borrowDate">Borrow Date:</label>
-                <input type="date" id="borrowDate" name="borrowDate" required>
-                <br>
-
-                <label for="returnDate">Return Date:</label>
-                <input type="date" id="returnDate" name="returnDate" required>
-                <br>
-
-                <label for="price">Price:</label><br>
-                <input type="number" id="price" name="price" required>
-                <br> 
-
-                <label for="fine">Fine P.D:</label><br>
-                <input type="number" id="fine" name="fine" required>
-                <br>
-
-                <label for="status">Status:</label><br>
-                <select id="status" name="status">
-                    <option value="upcoming">upcoming</option>
-                    <option value="ongoing">ongoing</option>
-                </select>
-                <br>
-
-                <button class="addButton" type="submit" name="addButton">ADD</button>
-            </form>
-        </div>
-
+<!-- Booking Form Section -->
+<div class="cardProduct">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="true" style="color: white; background-color: rgb(25,25,112); font-weight: bold;">ADD BOOKING</a>
+            </li>             
+        </ul>
     </div>
+    <div class="newTransacForm">
+        <form method="POST">
+            <!-- Customer Name Input -->
+            <label for="customerName">Customer Name:</label><br>
+            <input type="text" id="customerName" name="customerName" required>
+            <br>
+
+            <!-- Customer Number Input -->
+            <label for="customerNumber">Customer Number:</label><br>
+            <input type="number" id="customerNumber" name="customerNumber" required>
+            <br>  
+
+            <!-- Car Selection -->
+            <label for="car">Car:</label><br>
+            <select id="car" name="car">
+                <?php
+                foreach ($carNames as $carName) {
+                    echo "<option value=\"$carName\">$carName</option>";
+                }
+                ?>
+            </select>
+            <br>   
+
+            <!-- Borrow Date Input -->
+            <label for="borrowDate">Borrow Date:</label>
+            <input type="date" id="borrowDate" name="borrowDate" required>
+            <br>
+
+            <!-- Return Date Input -->
+            <label for="returnDate">Return Date:</label>
+            <input type="date" id="returnDate" name="returnDate" required>
+            <br>
+
+            <!-- Price Input -->
+            <label for="price">Price:</label><br>
+            <input type="number" id="price" name="price" required>
+            <br> 
+
+            <!-- Fine Per Day Input -->
+            <label for="fine">Fine P.D:</label><br>
+            <input type="number" id="fine" name="fine" required>
+            <br>
+
+            <!-- Booking Status Selection -->
+            <label for="status">Status:</label><br>
+            <select id="status" name="status">
+                <option value="upcoming">upcoming</option>
+                <option value="ongoing">ongoing</option>
+            </select>
+            <br>
+
+            <!-- Add Button -->
+            <button class="addButton" type="submit" name="addButton">ADD</button>
+        </form>
+    </div>
+</div>
     
     <?php
  include_once('../includes/connection.php');

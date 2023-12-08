@@ -56,65 +56,70 @@ include'../includes/sidebar.php';
         });
     </script>
             </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> 
-               <thead>
-                   <tr>
-                     <th>No.</th>
-                     <th>CUSTOMER NAME</th>
-                     <th>CAR</th>
-                     <th>BORROW DATE</th>
-                     <th>RETURN DATE</th>   
-                     <th>PRICE</th>
-                     <th>FINE P.D</th>
-                     <th>DATE RETURNED</th>
-                     <th>PENALTY</th>
-                     <th>GROSS INC</th>
-                     <th>STATUS</th>
-                   </tr>
-               </thead>
-                <tbody>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> 
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>CUSTOMER NAME</th>
+                    <th>CAR</th>
+                    <th>BORROW DATE</th>
+                    <th>RETURN DATE</th>   
+                    <th>PRICE</th>
+                    <th>FINE P.D</th>
+                    <th>DATE RETURNED</th>
+                    <th>PENALTY</th>
+                    <th>GROSS INC</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
                 <?php
-                        include_once('../includes/connection.php');
-                        $dbConnection = new DbConnection();
-                        $db = $dbConnection->getConnection();
-                                $Query = "SELECT rentals.rentalId, customers.name AS customer_name, cars.carName, rentals.borrowDate, rentals.returnDate, rentals.price, rentals.fine_per_day, rentals.status, rentals.dateReturned, rentals.penalty, (rentals.price + rentals.penalty) AS grossIncome
-                                FROM rentals
-                                INNER JOIN customers ON rentals.customerId = customers.customerId 
-                                INNER JOIN cars ON rentals.carId = cars.carId
-                                WHERE rentals.status = 'completed'";
-                                $result = $db->query($Query);
-                        
-                                if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>";
-                                    echo "<td>{$row['rentalId']}</td>";
-                                    echo "<td>{$row['customer_name']}</td>";
-                                    echo "<td>{$row['carName']}</td>";
-                                    echo "<td>{$row['borrowDate']}</td>";
-                                    echo "<td>{$row['returnDate']}</td>";
-                                    echo "<td>{$row['price']}</td>";
-                                    echo "<td>{$row['fine_per_day']}</td>";
-                                    echo "<td>{$row['dateReturned']}</td>";
-                                    echo "<td>{$row['penalty']}</td>";
-                                    echo "<td>{$row['grossIncome']}</td>";
-                                    echo "<td>{$row['status']}</td>";                                                        
-                                }
-                                } else {
-                                echo "<tr><td colspan='9'>No completed rentals found</td></tr>";
-                                }
-                        ?>
-                    </tbody>
-                </tbody>
+                    // Include the connection file
+                    include_once('../includes/connection.php');
+                    
+                    // Create a new instance of the DbConnection class
+                    $dbConnection = new DbConnection();
+                    $db = $dbConnection->getConnection();
+                    
+                    // SQL query to retrieve completed rentals
+                    $Query = "SELECT rentals.rentalId, customers.name AS customer_name, cars.carName, rentals.borrowDate, rentals.returnDate, rentals.price, rentals.fine_per_day, rentals.status, rentals.dateReturned, rentals.penalty, (rentals.price + rentals.penalty) AS grossIncome
+                            FROM rentals
+                            INNER JOIN customers ON rentals.customerId = customers.customerId 
+                            INNER JOIN cars ON rentals.carId = cars.carId
+                            WHERE rentals.status = 'completed'";
                             
-                </table>
-                        
-               </div>                  
-            </div>
-                  
-    </div>
-    </div>
+                    // Execute the query
+                    $result = $db->query($Query);
+                    
+                    // Check if there are completed rentals
+                    if ($result->num_rows > 0) {
+                        // Loop through the result set and display rental information
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>{$row['rentalId']}</td>";
+                            echo "<td>{$row['customer_name']}</td>";
+                            echo "<td>{$row['carName']}</td>";
+                            echo "<td>{$row['borrowDate']}</td>";
+                            echo "<td>{$row['returnDate']}</td>";
+                            echo "<td>{$row['price']}</td>";
+                            echo "<td>{$row['fine_per_day']}</td>";
+                            echo "<td>{$row['dateReturned']}</td>";
+                            echo "<td>{$row['penalty']}</td>";
+                            echo "<td>{$row['grossIncome']}</td>";
+                            echo "<td>{$row['status']}</td>";
+                        }
+                    } else {
+                        // Display a message if no completed rentals are found
+                        echo "<tr><td colspan='9'>No completed rentals found</td></tr>";
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>                  
+</div>
+</div>
     <!-- End of transactionHistory -->
 
 

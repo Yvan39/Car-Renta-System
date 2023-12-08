@@ -67,17 +67,22 @@ include'../includes/sidebar.php';
     <?php
 
 class Database {
+    // Method to update the password for a given adminId
     public function updatePassword($adminId, $newPassword) {
 
+        // Establish a PDO connection to the database
         $pdo = new PDO("mysql:host=localhost;dbname=car_rental_system", "root", "");
 
+        // Hash the new password before updating
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
+        // SQL query to update the password for the specified adminId
         $sql = "UPDATE admin_accounts SET password = :password WHERE admin_id = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id', $adminId, PDO::PARAM_INT);
         $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 
+        // Execute the query and return success or failure
         if ($stmt->execute()) {
             return true; 
         } else {
@@ -89,7 +94,9 @@ class Database {
 class AccountEditor {
     private $adminIdFromUrl;
 
+    // Constructor to initialize the adminIdFromUrl property
     public function __construct() {
+        // Check if 'id' is set in the GET parameters
         if (isset($_GET["id"])) {
             $this->adminIdFromUrl = $_GET["id"];
         } else {
@@ -97,25 +104,33 @@ class AccountEditor {
         }
     }
 
+    // Method to handle form submission
     public function handleFormSubmission() {
+        // Check if the form has been submitted using the POST method
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Get the admin_id and new password from the POST parameters
             $adminId = $_POST["admin_id"];
             $newPassword = $_POST["newPassword"];
 
+            // Call the updateAccount method with the obtained values
             $this->updateAccount($adminId, $newPassword);
         }
     }
 
+    // Method to display the admin ID in the form
     public function displayAdminId() {
         echo '<label for="admin_id">ID:</label><br>';
         echo '<input type="text" name="admin_id" readonly value="' . $this->adminIdFromUrl . '">';
         echo '<br>';
     }
 
+    // Method to update the account using the Database class
     public function updateAccount($adminId, $newPassword) {
 
+        // Create an instance of the Database class
         $db = new Database();
 
+        // Check the result of the update operation and display an alert
         if ($db->updatePassword($adminId, $newPassword)) {
             echo "<script>alert('Account updated successfully!');</script>";
         } else {
@@ -124,7 +139,10 @@ class AccountEditor {
     }
 }
 
+// Create an instance of the AccountEditor class
 $accountEditor = new AccountEditor();
+
+// Call the handleFormSubmission method to process the form data
 $accountEditor->handleFormSubmission();
 ?>
 

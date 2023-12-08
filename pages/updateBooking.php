@@ -61,48 +61,66 @@ include'../includes/sidebar.php';
         }
     </style>
 <?php
+// Include the database connection file
 include_once('../includes/connection.php');
 
+// Define the RentalUpdater class responsible for updating rental status
 class RentalUpdater {
     private $db;
 
+    // Constructor to initialize the RentalUpdater with a database connection
     public function __construct(DbConnection $dbConnection) {
         $this->db = $dbConnection->getConnection();
     }
 
+    // Method to update the status of a rental given its ID
     public function updateRentalStatus($bookingID, $status) {
+        // SQL query to update the rental status
         $query = "UPDATE rentals SET status = ? WHERE rentalId = ?";
+        // Prepare the query
         $stmt = $this->db->prepare($query);
+        // Bind parameters
         $stmt->bind_param("si", $status, $bookingID);
 
+        // Execute the update query
         $updateResult = $stmt->execute();
 
+        // Close the prepared statement
         $stmt->close();
 
+        // Return the result of the update operation
         return $updateResult;
     }
 }
 
+// Check if the request method is POST and the 'updateButton' is set in the POST data
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateButton'])) {
+    // Retrieve the booking ID, customer name, and status from the POST data
     $bookingID = $_POST['bookingID'];
     $customerName = $_POST['customerName'];
-    $status = $_POST['status'];    
+    $status = $_POST['status'];
 
+    // Create a new database connection instance
     $dbConnection = new DbConnection();
+    // Create a new RentalUpdater instance with the database connection
     $rentalUpdater = new RentalUpdater($dbConnection);
 
+    // Update the rental status and get the result
     $updateResult = $rentalUpdater->updateRentalStatus($bookingID, $status);
 
-
+    // Check the result of the update operation
     if ($updateResult) {
+        // Display a success message and redirect to the rentals page
         echo '<script>alert("Update Successful");</script>';
         header("Location: rentals.php");
         exit();
     } else {
+        // Display a failure message
         echo '<script>alert("Update Failed");</script>';
     }
 }
 ?>
+
 <!-- Form to update (advanceBooking) from upcoming to ongoing -->
 <!-- Start of updateBooking -->
 <div class="cardProduct">

@@ -34,17 +34,30 @@
         }
 
 
-        </style>
-            <div class="timestamp" id="timestamp"></div>
-            <script>
-                function updateTimestamp() {
-                    var timestampDiv = document.getElementById('timestamp');
-                    var now = new Date();
-                    var timestamp = now.toLocaleString();
-                    timestampDiv.innerText =  timestamp;
-                }
-                window.onload = updateTimestamp;
-            </script>
+        <style>
+    /* Styles for the timestamp display */
+</style>
+<div class="timestamp" id="timestamp"></div>
+<script>
+    // JavaScript function to update the timestamp
+    function updateTimestamp() {
+        // Get the element with the 'timestamp' id
+        var timestampDiv = document.getElementById('timestamp');
+        
+        // Create a new Date object to get the current date and time
+        var now = new Date();
+        
+        // Format the timestamp as a localized string
+        var timestamp = now.toLocaleString();
+        
+        // Set the inner text of the timestampDiv to the formatted timestamp
+        timestampDiv.innerText = timestamp;
+    }
+
+    // Call the updateTimestamp function when the window has finished loading
+    window.onload = updateTimestamp;
+</script>
+
 
       <!-- Main Content -->
       <div id="content">

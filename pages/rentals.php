@@ -61,9 +61,10 @@ include'../includes/sidebar.php';
                         include_once('../includes/connection.php');
                         $dbConnection = new DbConnection();
                         $db = $dbConnection->getConnection();
-                                $Query = "SELECT rentals.rentalId, customers.name AS customer_name, rentals.carId, rentals.borrowDate, rentals.returnDate, rentals.price, rentals.fine_per_day, rentals.status
+                                $Query = "SELECT rentals.rentalId, customers.name AS customer_name, cars.carName, rentals.borrowDate, rentals.returnDate, rentals.price, rentals.fine_per_day, rentals.status
                                 FROM rentals
                                 INNER JOIN customers ON rentals.customerId = customers.customerId
+                                INNER JOIN cars ON rentals.carId = cars.carId
                                 WHERE rentals.status = 'ongoing'";
                         
                                 $result = $db->query($Query);
@@ -73,7 +74,7 @@ include'../includes/sidebar.php';
                                     echo "<tr>";
                                     echo "<td>{$row['rentalId']}</td>";
                                     echo "<td>{$row['customer_name']}</td>";
-                                    echo "<td>{$row['carId']}</td>";
+                                    echo "<td>{$row['carName']}</td>";
                                     echo "<td>{$row['borrowDate']}</td>";
                                     echo "<td>{$row['returnDate']}</td>";
                                     echo "<td>{$row['price']}</td>";
@@ -126,37 +127,51 @@ include'../includes/sidebar.php';
                         </thead>
                     <tbody>
                     <?php
+                        // Include the database connection file
                         include_once('../includes/connection.php');
+
+                        // Create a new database connection instance
                         $dbConnection = new DbConnection();
                         $db = $dbConnection->getConnection();
-                                $Query = "SELECT rentals.rentalId, customers.name AS customer_name, rentals.carId, rentals.borrowDate, rentals.returnDate, rentals.price, rentals.fine_per_day, rentals.status
-                                FROM rentals
-                                INNER JOIN customers ON rentals.customerId = customers.customerId
-                                WHERE rentals.status = 'upcoming'";
-                        
-                                $result = $db->query($Query);
-                        
-                                if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>";
-                                    echo "<td>{$row['rentalId']}</td>";
-                                    echo "<td>{$row['customer_name']}</td>";
-                                    echo "<td>{$row['carId']}</td>";
-                                    echo "<td>{$row['borrowDate']}</td>";
-                                    echo "<td>{$row['returnDate']}</td>";
-                                    echo "<td>{$row['price']}</td>";
-                                    echo "<td>{$row['fine_per_day']}</td>";
-                                    echo "<td>{$row['status']}</td>";
-                                    echo "<td>
+
+                        // SQL query to retrieve upcoming rentals information
+                        $Query = "SELECT rentals.rentalId, customers.name AS customer_name, cars.carName, rentals.borrowDate, rentals.returnDate, rentals.price, rentals.fine_per_day, rentals.status
+                        FROM rentals
+                        INNER JOIN customers ON rentals.customerId = customers.customerId
+                        INNER JOIN cars ON rentals.carId = cars.carId
+                        WHERE rentals.status = 'upcoming'";
+
+                        // Execute the SQL query
+                        $result = $db->query($Query);
+
+                        // Check if there are upcoming rentals
+                        if ($result->num_rows > 0) {
+                            // Loop through the results and display each rental information in a table row
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>{$row['rentalId']}</td>";
+                                echo "<td>{$row['customer_name']}</td>";
+                                echo "<td>{$row['carName']}</td>";
+                                echo "<td>{$row['borrowDate']}</td>";
+                                echo "<td>{$row['returnDate']}</td>";
+                                echo "<td>{$row['price']}</td>";
+                                echo "<td>{$row['fine_per_day']}</td>";
+                                echo "<td>{$row['status']}</td>";
+                                echo "<td>
                                     <a href='updateBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-primary'>Update</a>
                                     <a href='cancelBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-primary'>Cancel</a>
                                     <a href='editBooking.php?rentalId={$row['rentalId']}&customer_name={$row['customer_name']}' class='btn btn-primary'>Edit</a>
-                                  </td>";                                                         
-                                }
-                                } else {
-                                echo "<tr><td colspan='9'>No upcoming rentals found</td></tr>";
-                                }
+                                </td>";
+                            }
+                        } else {
+                            // Display a message if no upcoming rentals are found
+                            echo "<tr><td colspan='9'>No upcoming rentals found</td></tr>";
+                        }
+
+                        // Close the database connection
+                        $db->close();
                         ?>
+
                     </tbody>
                     </table>
                 </div>

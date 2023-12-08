@@ -65,11 +65,14 @@ include_once('../includes/connection.php');
 class BookingEditor {
     private $db;
 
+    // Constructor to initialize the database connection
     public function __construct(DbConnection $dbConnection) {
         $this->db = $dbConnection->getConnection();
     }
 
+    // Method to edit a booking in the database
     public function editBooking($bookingID, $customerName, $car, $barrowDate, $returnDate, $price, $fine, $status) {
+        // SQL query to update booking information by joining tables
         $query = "UPDATE rentals 
                   INNER JOIN customers ON rentals.customerId = customers.customerId 
                   INNER JOIN cars ON rentals.carId = cars.carId 
@@ -78,16 +81,21 @@ class BookingEditor {
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("ssssddsi", $customerName, $car, $barrowDate, $returnDate, $price, $fine, $status, $bookingID);
 
+        // Execute the update query
         $updateResult = $stmt->execute();
     
+        // Close the prepared statement
         $stmt->close();
     
+        // Return the result of the update operation
         return $updateResult;
     }    
 }
 
+// Check if the form has been submitted using the POST method
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['saveButton'])) {
+        // Get form data from POST parameters
         $bookingID = $_POST['ID'];
         $customerName = $_POST['customerName'];
         $car = $_POST['car'];
@@ -97,11 +105,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $fine = $_POST['fine'];
         $status =$_POST['status'];
 
+        // Create a new database connection
         $dbConnection = new DbConnection();
         $bookingEditor = new BookingEditor($dbConnection);
 
+        // Call the editBooking method with the obtained values
         $editResult = $bookingEditor->editBooking($bookingID, $customerName, $car, $borrowDate, $returnDate, $price, $fine, $status);
 
+        // Display an alert based on the result of the edit operation
         if ($editResult) {
             echo '<script>alert("Booking edited successfully.");';
             echo 'window.location.href = "rentals.php";</script>';
@@ -111,6 +122,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+?>
+<?php
+include_once('../includes/connection.php');
+
+class CarManager
+{
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
+    // Method to get all car names from the database
+    public function getAllCarNames()
+    {
+        $selectCarNamesQuery = "SELECT carName FROM cars";
+        $result = $this->db->query($selectCarNamesQuery);
+
+        $carNames = array();
+        while ($row = $result->fetch_assoc()) {
+            $carNames[] = $row['carName'];
+        }
+
+        return $carNames;
+    }
+}
+$dbConnection = new DbConnection();
+$db = $dbConnection->getConnection();
+
+$carManager = new CarManager($db);
+
+// Fetch all car names from the database
+$carNames = $carManager->getAllCarNames();
 ?>
     <!-- Form to edit typo or extend date in the advance booking table -->
     <!-- Start of editBooking-->
@@ -139,10 +184,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <label for="car">Car:</label><br>
                 <select id="car" name="car">
-                    <option value="Car 1">Car 1</option>
-                    <option value="Car 2">Car 2</option>
-                    <option value="Car 3">Car 3</option>
-                    <option value="Car 4">Car 4</option>
+                <?php
+                foreach ($carNames as $carName) {
+                    echo "<option value=\"$carName\">$carName</option>";
+                }
+                ?>
                 </select>
                 <br>   
 

@@ -62,48 +62,66 @@ include'../includes/sidebar.php';
 
     </style>
 <?php
+// Include the database connection file
 include_once('../includes/connection.php');
 
+// Define the RentalUpdater class responsible for updating rental status
 class RentalUpdater {
     private $db;
 
+    // Constructor to initialize the RentalUpdater with a database connection
     public function __construct(DbConnection $dbConnection) {
         $this->db = $dbConnection->getConnection();
     }
 
-    public function updateRentalStatus($ongoingID, $dateReturned, $penalty, $status){
+    // Method to update the status of an ongoing rental
+    public function updateRentalStatus($ongoingID, $dateReturned, $penalty, $status) {
+        // SQL query to update the rental status, dateReturned, and penalty
         $query = "UPDATE rentals SET status = ?, dateReturned = ?, penalty = ? WHERE rentalId = ?";
+        // Prepare the query
         $stmt = $this->db->prepare($query);
+        // Bind parameters
         $stmt->bind_param("ssii", $status, $dateReturned, $penalty, $ongoingID);
-    
+
+        // Execute the update query
         $updateResult = $stmt->execute();
-    
+
+        // Close the prepared statement
         $stmt->close();
-    
+
+        // Return the result of the update operation
         return $updateResult;
-    }    
+    }
 }
 
+// Check if the request method is POST and the 'updateButton' is set in the POST data
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateButton'])) {
+    // Retrieve the ongoing rental ID, dateReturned, penalty, and status from the POST data
     $ongoingID = $_POST['ongoingID'];
     $dateReturned = $_POST['dateReturned'];
     $penalty = $_POST['penalty'];
-    $status = $_POST['status'];    
+    $status = $_POST['status'];
 
+    // Create a new database connection instance
     $dbConnection = new DbConnection();
+    // Create a new RentalUpdater instance with the database connection
     $rentalUpdater = new RentalUpdater($dbConnection);
 
+    // Update the ongoing rental status, dateReturned, and penalty and get the result
     $updateResult = $rentalUpdater->updateRentalStatus($ongoingID, $dateReturned, $penalty, $status);
 
-
+    // Check the result of the update operation
     if ($updateResult) {
+        // Display a success message
         echo '<script>alert("Update Successful");</script>';
         exit();
     } else {
+        // Display a failure message
         echo '<script>alert("Update Failed");</script>';
     }
 }
 ?>
+
 <!-- Form to update Ongoing to completed -->
 <!-- Start of updateOngoing -->
 <div class="cardProduct">
