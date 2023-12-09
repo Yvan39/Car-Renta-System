@@ -102,18 +102,21 @@ include'../includes/sidebar.php';
 </div>
 
 <?php
+//establishing a database connection
 include_once('../includes/connection.php');
 
+ // This class encapsulates account management operations. It has a constructor that takes a database connection as a parameter.
 class AccountManager
 {
     private $db;
 
+    //Public Method, A public method or property can be accessed from outside the class
     public function __construct($db)
     {
-        $this->db = $db;
+        $this->db = $db; 
     }
 
-    // Method to add an account to the database
+    // Method to add an account to the database. This method adds a new account to the database. It uses prepared statements to protect against SQL injection.
     public function addAccount($username, $password)
     {
         // Hash the password before storing it

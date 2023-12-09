@@ -61,6 +61,7 @@ include'../includes/sidebar.php';
         }
     </style>
 <?php
+error_reporting(0);
 // Include the database connection file
 include_once('../includes/connection.php');
 
@@ -112,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateButton'])) {
     if ($updateResult) {
         // Display a success message and redirect to the rentals page
         echo '<script>alert("Update Successful");</script>';
-        header("Location: rentals.php");
         exit();
     } else {
         // Display a failure message

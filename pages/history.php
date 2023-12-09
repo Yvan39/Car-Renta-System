@@ -29,7 +29,7 @@ include'../includes/sidebar.php';
     <div class="prodTable">
     <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h4 class="m-2 font-weight-bold ">Products</h4>
+                <h4 class="m-2 font-weight-bold ">History</h4>
                 <div class = "search-bar">
                     <input type="text" id="searchInput" placeholder="Search Customer Name..." class="form-control">
                 </div>
